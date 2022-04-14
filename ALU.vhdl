@@ -7,14 +7,14 @@ entity ALU is
   );
     Port ( INPUT1 : in  STD_LOGIC_VECTOR(N-1 downto 0);
 			  INPUT2 : in STD_LOGIC_VECTOR(N-1 downto 0); 	
-			  OP : in  STD_LOGIC_VECTOR(0 downto 0); 
+			  OP : in  STD_LOGIC_VECTOR(1 downto 0); 
 			  OUTPUT: out  STD_LOGIC_VECTOR(N-1 downto 0);
 			  CY : out std_logic;
 			  Z : out std_logic
   );
 end ALU;
 		
-architecture badabambadabingtuss of ALU is
+architecture badabingbadabamtuss of ALU is
 
 signal temp : std_logic_vector(N-1 downto 0);
 
@@ -24,11 +24,11 @@ process(INPUT1, INPUT2, OP)
 begin
 case(OP) is
 
-when "0" =>
-	temp <= std_logic_vector(signed(INPUT1) + signed(INPUT2));
+when "00" =>
+	temp <= std_logic_vector(signed(INPUT1) + signed(INPUT2)); --signed Addition
 	OUTPUT <= temp;
  	if temp = "0000000000000000" then
-		Z <= '1';
+		Z <= '1'; --set Zero flag 
 	else
 		Z <= '0';
 	end if;
@@ -37,14 +37,26 @@ when "0" =>
 	else 
 		CY <= '0';
 	end if;
-when "1" =>
+-- if both input have same sign and output has different sign then set Carry Flag
+when "01" =>
 	OUTPUT <= INPUT1 nand INPUT2;
 	OUTPUT <= temp;
- 	if temp = "0000000000000000" then
+ 	if temp = "0000000000000000" then --Zero Flag condition
 		Z <= '1';
 	else
 		Z <= '0';
 	end if;
+	
+when "10" =>
+	OUTPUT <= std_logic_vector(signed(INPUT1) - signed(INPUT2)); -- signed Sub
+	OUTPUT <= temp;
+ 	if temp = "0000000000000000" then -- Zero flag condition
+		Z <= '1';
+	else
+		Z <= '0';
+	end if;
+when others =>
+	NULL;
 end case;
 end process;
-end badabambadabingtuss;
+end badabingbadabamtuss;
