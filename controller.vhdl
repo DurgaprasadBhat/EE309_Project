@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 entity controller is
 port(instruction:in std_logic_vector(15 downto 0);
         reset,clock:in std_logic; IB, SB: in integer; c, z, sr, b : in std_logic; 
-        cont_word: out std_logic);
+        cont_word: out std_logic_vector(19 downto 0));
 end controller;
 
 architecture rch of controller is
@@ -34,21 +34,30 @@ begin
     case y_present is
         when 0=>
 				y_next<= IB;
+				cont_word <= "00100000000010000101";
         when 1=>
 				y_next<= 2;
+				cont_word <= "01010001101110000001";
         when 2=>
 				y_next<= IB;
+				cont_word <= "00110000100010100101";
         when 3=>
 				y_next<= SB;
+				cont_word <= "10010011101010000001";
 		  when 4 =>
 		      y_next <= 5;
+				cont_word <= "00100000000000000101";
 		  when 5 =>
 		      y_next <= IB;
+				cont_word <= "00100000100010000101";
 		  when 6 =>
 		      y_next <= 0;
+				cont_word <= "00101000000100010001";
 		  when 7 =>
 		      y_next <= 0;
+				cont_word <= "00100100100000000001";
 		  when 8 =>
+		      cont_word <= "11101000001110000001";
 		      if (z = '1') then
 		      y_next <= 9;
 				else 
@@ -56,23 +65,34 @@ begin
 				end if;
 		  when 9 =>
 		      y_next <= 10;
+				cont_word <= "00010110010010000001";
 		  when 10 =>
 		      y_next <= 0;
+				cont_word <= "00110000100001100001";
 		  when 11 =>
 		      y_next <= SB;
+				cont_word <= "00100001100000000001";
 		  when 12 =>
 		      y_next <= SB;
+				cont_word <= "00010111110010000001";
 		  when 13 =>
 		      y_next <= 14;
+				cont_word <= "00010111110010000001";
 		  when 14 =>
 		      y_next <= 0;
+				cont_word <= "00101000100100000001";
 		  when 15 =>
 		      y_next <= SB;
+				cont_word <= "00001000011010000001";
+
 		  when 16 =>
 		      y_next <= IB;
+				cont_word <= "00100000100100000001";
 		  when 17 =>
 		      y_next <= 18;
+				cont_word <= "00011000000000001010";
 		  when 18 =>
+		      cont_word <= ""; 
 		      if (sr = '0') then
 		      y_next <= 0;
             elsif (sr = '1' and b = '0') then
@@ -82,9 +102,10 @@ begin
 				end if;
 		  when 19 =>
 		      y_next <= 17;
+				cont_word <= "00101000000000000001";
 		  when 20 =>
 		      y_next <= 18;
-		  
+		      cont_word <= "00011000001101000010";
     end case;
 end process;
 

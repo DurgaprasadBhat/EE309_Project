@@ -10,8 +10,6 @@ entity register_file is
 	 inputB       : in  std_logic_vector(15 downto 0);
 	 incr        : in std_logic_vector(15 downto 0);
 	 to_inc      : out std_logic_vector(15 downto 0);
-	 ren1        : in  std_logic;
-	 ren2        : in std_logic;
     writeEnable1 : in  std_logic;
 	 inc_wr_en   : in  std_logic;
 	 b_wr_en     : in std_logic;
@@ -29,14 +27,11 @@ architecture behavioral of register_file is
 begin
   regFile : process (clk) is
   begin
+  -- Read A and B before bypass
+  outA <= registers(to_integer(unsigned(regASel)));
+  outB <= registers(to_integer(unsigned(regBSel)));
+
     if rising_edge(clk) then
-	   if (ren1 ='1') then
-      -- Read A and B before bypass
-      outA <= registers(to_integer(unsigned(regASel)));
-		end if;
-		if (ren2 = '1') then
-      outB <= registers(to_integer(unsigned(regBSel)));
-		end if; 
       -- Write and bypass
       if writeEnable1 = '1' then
         registers(to_integer(unsigned(writeRegSel))) <= inputA;  -- Write
