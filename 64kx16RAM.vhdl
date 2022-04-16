@@ -15,7 +15,7 @@ end Single_port_RAM_VHDL;
 
 architecture Behavioral of Single_port_RAM_VHDL is
 -- define the new type for the 65535x16 RAM 
-type RAM_ARRAY is array (0 to  65535) of std_logic_vector (7 downto 0);
+type RAM_ARRAY is array (0 to  65535) of std_logic_vector (15 downto 0);
 -- initial values in the RAM
 signal RAM: RAM_ARRAY :=(
    x"5555",x"6666",x"7777",x"6767",-- 0x00: 
