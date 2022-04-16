@@ -7,11 +7,11 @@ ENTITY register16 IS
 	generic( N : integer := 16);
 
 PORT(
-    d   : IN STD_LOGIC_VECTOR(N DOWNTO 0); --input
+    d   : IN STD_LOGIC_VECTOR(N-1 DOWNTO 0); --input
     ld  : IN STD_LOGIC; -- load/enable.
     clr : IN STD_LOGIC; -- async. clear.
     clk : IN STD_LOGIC; -- clock.
-    q   : OUT STD_LOGIC_VECTOR(N DOWNTO 0) -- output
+    q   : OUT STD_LOGIC_VECTOR(N-1 DOWNTO 0) -- output
 );
 END register16;
 
