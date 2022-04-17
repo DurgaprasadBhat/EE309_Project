@@ -29,10 +29,12 @@ begin
     
 end process;
 
-state_transition_proc:process(instruction,y_present)
+state_transition_proc:process( y_present,c, z, sr, IB, SB,b)
 begin
     y_next <= y_present;
     case y_present is
+	     when 31 =>
+		      y_next <= IB;
         when 0=>
 				y_next<= IB;
 				cont_word <= "00100000000010000101";
@@ -107,6 +109,8 @@ begin
 		  when 20 =>
 		      y_next <= 18;
 		      cont_word <= "00011000001101000010";
+		  when others =>
+		      NULL;
     end case;
 end process;
 
