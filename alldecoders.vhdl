@@ -69,3 +69,26 @@ begin
 	end process;
 end as1muxarch;
 
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity mux is
+port (cy, z, s0, s1  : in std_logic; output: out std_logic);
+end mux;
+	
+architecture muxarch of mux is
+begin
+process(s0, s1, cy, z)
+begin 
+if(s0 = '0' and s1 ='0') then
+	output <= '1';
+elsif(s0 = '1' and s1 ='0') then
+	output <= z;
+elsif(s0 = '0' and s1 ='1') then
+	output <= cy;
+else 
+	output <= '1';
+end if;
+end muxarch;
+	
