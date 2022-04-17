@@ -4,7 +4,8 @@ use ieee.numeric_std.all;
 
 entity controller is
 port(instruction:in std_logic_vector(15 downto 0);
-        reset,clock:in std_logic; IB, SB: in integer; c, z, sr, b : in std_logic; 
+        reset,clock:in std_logic; IB, SB: in integer; c, z, b : in std_logic; 
+		  sr : in std_logic_vector(2 downto 0);
         cont_word: out std_logic_vector(19 downto 0));
 end controller;
 
@@ -93,9 +94,9 @@ begin
 				cont_word <= "00011000000000001010";
 		  when 18 =>
 		      cont_word <= ""; 
-		      if (sr = '0') then
+		      if (sr = "000") then
 		      y_next <= 0;
-            elsif (sr = '1' and b = '0') then
+            elsif (sr /= "000" and b = '0') then
 				y_next <= 19;
 				else 
 				y_next <= SB;
