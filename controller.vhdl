@@ -93,7 +93,7 @@ begin
 		      y_next <= 18;
 				cont_word <= "00011000000000001010";
 		  when 18 =>
-		      cont_word <= ""; 
+		      cont_word <= "00100000000000000000"; 
 		      if (sr = "000") then
 		      y_next <= 0;
             elsif (sr /= "000" and b = '0') then
@@ -111,3 +111,6 @@ begin
 end process;
 
 end rch;
+
+		          
+                
