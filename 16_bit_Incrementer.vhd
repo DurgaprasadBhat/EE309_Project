@@ -5,30 +5,30 @@ use IEEE.numeric_std.ALL;
 
 entity increment1 is
     port(
-        input : in std_logic_vector(15 downto 0);
-        reset, clk : in std_logic;
-        to_pc : out std_logic_vector(15 downto 0)
+        t1 : in std_logic_vector(15 downto 0);
+        pc : in std_logic_vector(15 downto 0);
+		  sr : in std_logic_vector(2 downto 0);
+		  sel : in std_logic_vector(1 downto 0);
+        output : out std_logic_vector(15 downto 0)
     );
 end increment1;
 
 
-architecture Behavioral of increment1 is
-  signal r_inc : unsigned(7 downto 0);
-  signal r_reg : unsigned(7 downto 0);
-
+architecture Strombreaker of increment1 is
 
 begin
-  r_inc <= unsigned(input)+1;
-
-  process (clk, reset)
+  process(t1, pc, sr, sel)
   begin
-    if(reset = '1') then
-        r_reg <= (others => '0');
-    elsif(clk'event and clk = '1') then
-        r_reg <= r_inc;
-    end if;
-  end process;
+	case(sel) is
+	when "00" => 
+			output <= std_logic_vector(unsigned(sr) + 1);
+	when "01" =>
+			output <= std_logic_vector(unsigned(pc) + 1);
+   when "10" => 
+			output <= std_logic_vector(unsigned(t1) + 1);
+	end case;
 
-  to_pc <= std_logic_vector(r_reg);
-
-end Behavioral;
+	end process;
+end Strombreaker;	
+			
+  

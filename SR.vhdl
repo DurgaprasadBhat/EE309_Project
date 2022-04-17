@@ -14,19 +14,20 @@ PORT(
 END SR;
 
 ARCHITECTURE regArch OF SR IS
+signal y : std_logic_vector(2 downto 0) :="000";
     
 BEGIN
-	 output <= "000";
     process(clk)
     begin
         if rising_edge(clk) then --write the register on rising edge of clock
             if wr_en = '1' then
                 if unsigned(inp_inc) > 7 then
-						output <= "000";
+						y <= "000";
 					 else
-						output <= inp_inc(2 downto 0);
+						y <= inp_inc(2 downto 0);
 					 end if;
             end if;
         end if;
+		  output <= y;
     end process;
 END regArch;

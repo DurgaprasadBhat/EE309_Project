@@ -18,7 +18,7 @@ END register16;
 ARCHITECTURE regArch OF register16 IS
 
 BEGIN
-    process(clk, clr)
+    process(clk)
     begin
         if clr = '1' then --clear register if clr is set
             q <= x"0000";

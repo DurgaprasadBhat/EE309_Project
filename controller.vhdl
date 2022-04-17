@@ -111,6 +111,3 @@ begin
 end process;
 
 end rch;
-
-		          
-                
