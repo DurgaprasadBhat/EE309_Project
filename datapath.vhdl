@@ -41,9 +41,9 @@ architecture mjolnir of datapath is
 	signal regFD: std_logic_vector(10 downto 0);
 	signal Ra, Rb, Rc : std_logic_vector(2 downto 0);
 	signal PC: std_logic_vector(2 downto 0) := "111";
-        signal ctrl1, ctrl0 : std_logic ;
+        signal ctrl1, ctrl0, cz_ctrl,reg_file_wr_a : std_logic ;
 	begin
-	
+	        reg_file_wr_a <= cz_ctrl and regFD(10);
 		
 		a16: work.a16 generic map(16) 
 						  port map(in_DI => ram_out, in_RFa => outA, in_IR => shift_out_7,
@@ -56,7 +56,7 @@ architecture mjolnir of datapath is
 									  q => busB);
 									  
 	   RF: work.register_file port map(outA => outA, outB => outB, inputA => inputA, inputB => inputB, 
-												  incr => incr, to_inc => to_inc,writeEnable1=>regFD(10),
+												  incr => incr, to_inc => to_inc,writeEnable1=>reg_file_wr_a,
 												  inc_wr_en=>regFD(8),b_wr_en=> regFD(9), regASel => regASel,
 												  regBSel => regBSel, writeRegSel => writeRegSel, clk => clk
 												  );
@@ -122,7 +122,7 @@ architecture mjolnir of datapath is
 		
 		as1mux : work.AS1mux port map( Ra => Ra, SR => SR_out,as1 => regFD(6 downto 5), output => regASel); 
 		
-		alu_mux : work.mux port map(cy => carryF, z => zeroF, s1 => ctrl1 , s0 => ctrl0);
+		alu_mux : work.mux port map(cy => carryF, z => zeroF, s1 => ctrl1 , s0 => ctrl0, output => cz_ctrl);
 		
 	        ctrl1 <= ((not IR_out(15)) and (not IR_out(14) and (not IR_out(13))and IR_out(12) or (not IR_out(15)) and (not IR_out(14) and (IR_out(13))and ( not IR_out(12)) )IR_out(1);
 		ctrl0 <= ((not IR_out(15)) and (not IR_out(14) and (not IR_out(13))and IR_out(12) or (not IR_out(15)) and (not IR_out(14) and (IR_out(13))and ( not IR_out(12)) )IR_out(0);
