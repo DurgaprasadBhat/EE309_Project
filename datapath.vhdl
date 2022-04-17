@@ -19,7 +19,6 @@ architecture mjolnir of datapath is
 	signal alu_inp1, alu_inp2, alu_out : std_logic_vector(15 downto 0);
 	signal alu_opcode : std_logic_vector(1 downto 0);
 	signal carryF, zeroF,zero_out : std_logic;
-	signal instruction : std_logic_vector(15 downto 0);
 	signal control_word : std_logic_vector(19 downto 0);
 	signal rst, cont_C, cont_Z, ctrl_SR, b : std_logic;
 	signal IB, SB : integer;
@@ -34,7 +33,7 @@ architecture mjolnir of datapath is
 	signal T1_inp_b, T1_inp_alu, T1_inp_inc, T1_out : std_logic_vector(15 downto 0);
 	signal T1_en_b, T1_en_alu, T1_en_inc : std_logic;
 	signal inc_sel : std_logic_vector(1 downto 0);
-	signal IR_in, IR_out: std_logic_vector(15 downto 0);
+	signal IR_in, IR_out, IR_L_out: std_logic_vector(15 downto 0);
 	signal IR_en : std_logic;
 	signal ram_out : std_logic_vector(15 downto 0) := x"0000";
 	signal T1_decoded: std_logic_vector(4 downto 0);
@@ -42,6 +41,7 @@ architecture mjolnir of datapath is
 	signal regFD: std_logic_vector(10 downto 0);
 	signal Ra, Rb, Rc : std_logic_vector(2 downto 0);
 	signal PC: std_logic_vector(2 downto 0) := "111";
+        signal ctrl1, ctrl0 : std_logic ;
 	begin
 	
 		
@@ -64,7 +64,7 @@ architecture mjolnir of datapath is
 		ALU: work.ALU port map(INPUT1 =>busA, INPUT2=>shift_out_1, OP=>alu_opcode, sel=>control_word(19 downto 18),
 									  CY => carryF, Z => zeroF, Z_out => zero_out , OUTPUT => alu_out);	
 									  
-		Ctrl: work.controller port map(instruction => instruction,reset => rst, clock=>clk, 
+		Ctrl: work.controller port map(reset => rst, clock=>clk, 
 												  IB => IB, SB => SB,c=> carryF ,z=> zero_out ,
 												  sr =>	SR_out , b => b, cont_word =>control_word
 												);
@@ -90,6 +90,8 @@ architecture mjolnir of datapath is
 		
 		
 		IR : work.IR port map(d=>ram_out,en=> control_word(2), clk => clk, q => IR_out);
+			
+	        IR_L : work.IR_L port map(d => ram_out, ld => control_word(2), q => IR_L_out);
 		
 		shift_ctrl_1(0) <= (IR_out(0) and IR_out(1)) and ((not IR_out(15)) and (not IR_out(14)) and (not IR_out(13)) and IR_out(12));
 		
@@ -97,7 +99,7 @@ architecture mjolnir of datapath is
 		Rb <= IR_out(8 downto 6);
 		Rc <= IR_out(5 downto 3);
 		
-		InstDec : work.InstDec port map(instruction => instruction, IB => IB, SB => SB);
+		InstDec : work.InstDec port map(instruction => IR_L_out, IB => IB, SB => SB);
 		
 		RAM : work.Single_Port_RAM_VHDL port map( RAM_ADDR=>busB, RAM_DATA_IN=>busA, RAM_WR=>control_word(4),
 																RAM_CLOCK =>clk,
@@ -119,6 +121,11 @@ architecture mjolnir of datapath is
 		as2mux : work.AS2mux port map( Ra => Ra, Rb => Rb,as2 => regFD(5 downto 4), output => regBSel); 
 		
 		as1mux : work.AS1mux port map( Ra => Ra, SR => SR_out,as1 => regFD(6 downto 5), output => regASel); 
+		
+		alu_mux : work.mux port map(cy => carryF, z => zeroF, s1 => ctrl1 , s0 => ctrl0);
+		
+	        ctrl1 <= ((not IR_out(15)) and (not IR_out(14) and (not IR_out(13))and IR_out(12) or (not IR_out(15)) and (not IR_out(14) and (IR_out(13))and ( not IR_out(12)) )IR_out(1);
+		ctrl0 <= ((not IR_out(15)) and (not IR_out(14) and (not IR_out(13))and IR_out(12) or (not IR_out(15)) and (not IR_out(14) and (IR_out(13))and ( not IR_out(12)) )IR_out(0);
 		
 		
 end mjolnir;
